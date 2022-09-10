@@ -15,12 +15,14 @@ function listing() {
                 let comment = rows[i]['comment']
                 let title = rows[i]['title']
                 let image = rows[i]['image']
-                let like = rows[i]['like']
+                // let like = rows[i]['like']
                 let price = rows[i]['price']
                 let sex = rows[i]['sex']
                 let url = rows[i]['url']
+                let num = rows[i]['num']
+                let dune = rows[i]['dune']
                 let temp_html = ``
-                if (like === false) {
+                if (dune == 0) {
                     temp_html = `<tr>
                                         <th scope="row">${rank}위</th>
                                         <td><img src="${image}" onclick="location.href='${url}'" alt=""></td>
@@ -29,7 +31,7 @@ function listing() {
                                         </td>
                                         <td>${sex}</td>
                                         <td onclick="event.cancelBubble=true">
-                                            <button class="fa" onclick="likeStar(${title})"><span class="like"><i class="fa-regular fa-star"></i></span></button>
+                                            <button class="fa" onclick="done_musinsa(${num})"><span class="like"><i class="fa-regular fa-star"></i></span></button>
                                         </td>
                                     </tr>`
 
@@ -42,7 +44,7 @@ function listing() {
                                         </td>
                                         <td>${sex}</td>
                                         <td onclick="event.cancelBubble=true">
-                                            <button class="fa" onclick="deleteStar(${title})"><span class="like"><i class="fa-solid fa-star"></i></span></button>
+                                            <button class="fa" onclick="deleteStar(${num})"><span class="like"><i class="fa-solid fa-star"></i></span></button>
                                         </td>
                                     </tr>`
                 }
@@ -50,30 +52,6 @@ function listing() {
             }
         }
     })
-}
-
-function likeStar(title) {
-    $.ajax({
-        type: 'POST',
-        url: '/musinsa/like',
-        data: {'title_give': title},
-        success: function (response) {
-            alert(response['msg']);
-            window.location.reload()
-        }
-    });
-}
-
-function deleteStar(title) {
-    $.ajax({
-        type: 'POST',
-        url: '/musinsa/delete',
-        data: {'title_give': title},
-        success: function (response) {
-            alert(response['msg']);
-            window.location.reload()
-        }
-    });
 }
 
 $(document).ready(function () {
@@ -118,4 +96,28 @@ function getPost(rank) {
             $("#content").append(`<p>${content}</p>`)
         }
     })
+}
+
+function done_musinsa(num) {
+    $.ajax({
+        type: "POST",
+        url: "/musinsa/done",
+        data: {num_give: num},
+        success: function (response) {
+            alert(response["msg"])
+            window.location.reload()
+        }
+    });
+}
+
+function deleteStar(num) {
+    $.ajax({
+        type: 'POST',
+        url: '/musinsa/delete',
+        data: {'num_give': num},
+        success: function (response) {
+            alert(response['msg']);
+            window.location.reload()
+        }
+    });
 }

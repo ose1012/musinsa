@@ -34,6 +34,8 @@ if response.status_code == 200:
         musinsa_list = list(db.musinsa.find({}, {'_id': False}))
         count = len(musinsa_list) + 1
         doc = {
+            'num': count,
+            'dune': 0,
             'rank': rank,
             'title': title,
             'image': image[i]["data-original"],
@@ -51,35 +53,6 @@ else:
 @app.route('/')
 def home():
     return render_template('index.html')
-
-
-# @app.route('/reply')
-# def reply():
-#     return render_template('reply.html')
-
-# API 역할을 하는 부분
-# @app.route('/musinsa', methods=['GET'])
-# def show_stars():
-#     mystar = list(db.musinsa.find({}, {'_id': 0}))
-#     return jsonify({'dbdata': mystar, 'msg': 'list 연결되었습니다!'})
-#
-# @app.route('/musinsa/like', methods=['POST'])
-# def like_star():
-#     title_receive = request.form['title_give']					# 받아온 title값을 선언
-#     target_star = db.mystar.find_one({'title':title_receive})		# like 누른 대상 선언
-#     target_like_count = target_star['like']						# 대상의 현재 like수 선언
-#     target_new_count = target_like_count + 1					# 현재 like 수 + 1
-#     db.musinsa.update_one({'title': title_receive}, {'$set': {'like': target_new_count}}) # 업데이트 진행
-#     return jsonify({'result': 'like', 'msg': 'like 연결되었습니다!'})
-#
-# @app.route('/musinsa/delete', methods=['POST'])
-# def delete_star():
-#     title_receive = request.form['title_give']
-#     target_star = db.mystar.find_one({'title': title_receive})
-#     target_like_count = target_star['like']
-#     target_new_count = target_like_count - 1
-#     db.musinsa.update_one({'title': title_receive}, {'$set': {'like': target_new_count}})
-#     return jsonify({'msg': 'delete 연결되었습니다!'})
 
 @app.route('/reply/<int:rank>')
 def reply(rank):
@@ -113,6 +86,17 @@ def reply_get():
     comment_list = list(db.reply.find({}, {'_id': False}))
     return jsonify({'reply': comment_list})
 
+@app.route("/musinsa/done", methods=["POST"])
+def musinsa_done():
+    num_receive = request.form['num_give']
+    db.musinsa.update_one({'num': int(num_receive)}, {'$set': {'dune': 1}})
+    return jsonify({'msg': '찜하기 완료!'})
+
+@app.route('/musinsa/delete', methods=['POST'])
+def delete_star():
+    num_receive = request.form['num_give']
+    db.musinsa.update_one({'num': int(num_receive)}, {'$set': {'dune': 0}})
+    return jsonify({'msg': '찜하기 취소!'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
