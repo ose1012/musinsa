@@ -1,3 +1,5 @@
+window.open('https://youtu.be/_u-JFPxBS2M', '40조', 'width = 500, height = 500, top = 100, left = 200, location = no');
+
 $(document).ready(function () {
     listing();
 });
@@ -22,12 +24,12 @@ function listing() {
                 let num = rows[i]['num']
                 let dune = rows[i]['dune']
                 let temp_html = ``
-                if (dune == 0) {
+                if (dune === 0) {
                     temp_html = `<tr>
                                         <th scope="row">${rank}위</th>
                                         <td><img src="${image}" onclick="location.href='${url}'" alt=""></td>
                                         <td><h4 onclick="location.href='${url}'">${title}</h4><p>${comment}</p><p>${price}</p>
-                                        <button onclick="location.href='/reply/${rank}'" type="button" class="btn-1">후기</button>
+                                        <button onclick="location.href='/reply?rank=${rank}'" type="button" class="btn-1">후기</button>
                                         </td>
                                         <td>${sex}</td>
                                         <td onclick="event.cancelBubble=true">
@@ -40,7 +42,7 @@ function listing() {
                                         <th scope="row">${rank}위</th>
                                         <td><img src="${image}" onclick="location.href='${url}'" alt=""></td>
                                         <td><h4 onclick="location.href='${url}'">${title}</h4><p>${comment}</p><p>${price}</p>
-                                        <button onclick="location.href='/reply/${rank}'" type="button" class="btn-1">후기</button>
+                                        <button onclick="location.href='/reply?rank=${rank}'" type="button" class="btn-1">후기</button>
                                         </td>
                                         <td>${sex}</td>
                                         <td onclick="event.cancelBubble=true">
@@ -83,20 +85,6 @@ $(document).ready(function () {
     })
 });
 
-function getPost(rank) {
-    $.ajax({
-        type: "GET",
-        url: `/reply?=${rank}`,
-        data: {},
-        success: (response) => {
-            const {rank, title, content,} = response;
-
-            $("#rank").append(`<p>${title}</p>`)
-            $("#title").append(`<p>작성자 -${title}</p>`)
-            $("#content").append(`<p>${content}</p>`)
-        }
-    })
-}
 
 function done_musinsa(num) {
     $.ajax({

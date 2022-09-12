@@ -54,11 +54,6 @@ else:
 def home():
     return render_template('index.html')
 
-@app.route('/reply/<int:rank>')
-def reply(rank):
-    print(rank)
-    return render_template("reply.html", rank=rank)
-
 
 @app.route("/musinsa", methods=["GET"])
 def musinsa_get():
@@ -67,11 +62,24 @@ def musinsa_get():
     return jsonify({'musinsas': musinsa_list})
 
 
+@app.route('/reply/view?rank=<int:rank>')
+def reply(rank):
+    print(rank)
+    return render_template("reply.html", rank=rank)
+
+# @app.route("/reply", methods=['GET', 'POST'])
+# def show_comment():
+#     rank = int(request.args["rank"])
+#
+#     # comment_list = list(db.reply.find({'rank': rank}, {'_id': False}))
+#     return render_template('reply.html', rank=rank)
+
 @app.route("/reply", methods=["POST"])
-def reply_post():
+def reply_post(rank):
     name_receive = request.form['name_give']
     comment_receive = request.form['comment_give']
     doc = {
+        'rank': int(rank),
         'name': name_receive,
         'comment': comment_receive
     }
@@ -82,9 +90,12 @@ def reply_post():
 
 
 @app.route("/reply", methods=["GET"])
-def reply_get():
-    comment_list = list(db.reply.find({}, {'_id': False}))
+def show_comment():
+    rank = int(request.args["rank"])
+
+    comment_list = list(db.reply.find({'rank': rank}, {'_id': False}))
     return jsonify({'reply': comment_list})
+
 
 @app.route("/musinsa/done", methods=["POST"])
 def musinsa_done():
@@ -92,11 +103,13 @@ def musinsa_done():
     db.musinsa.update_one({'num': int(num_receive)}, {'$set': {'dune': 1}})
     return jsonify({'msg': '찜하기 완료!'})
 
+
 @app.route('/musinsa/delete', methods=['POST'])
 def delete_star():
     num_receive = request.form['num_give']
     db.musinsa.update_one({'num': int(num_receive)}, {'$set': {'dune': 0}})
     return jsonify({'msg': '찜하기 취소!'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
