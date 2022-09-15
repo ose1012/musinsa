@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 
-    <title>무신사 실시간 랭킹</title>
-    <script src="https://kit.fontawesome.com/fa9d346fc7.js" crossorigin="anonymous"></script>
-    <style>
+        <title>무신사 실시간 랭킹</title>
+        <script src="https://kit.fontawesome.com/fa9d346fc7.js" crossorigin="anonymous"></script>
+        <style>
         * {
             font-family: 'Montserrat', sans-serif;
         }
@@ -87,36 +88,26 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
-    </style>
-    <script>
+
+        </style>
+        <script>
+        let comment = '{{ comment }}'
         $(document).ready(function () {
-            const rank = window.document.URL.split("?rank=")[1];
-            move_page(rank);
-            show_comment(rank);
+            show_comment_info();
+            show_comment();
         });
 
-        function move_page(rank) {
-            $.ajax({
-                type: "GET",
-                url: `/reply?rank=${rank}`,
-                data: {},
-                success: function (response) {
-                    const {name, comment} = response
-                    $('#name').append(`<p>${name}</p>`)
-                    $('#comment').append(`<p>${comment}</p>`)
-                    $('#post-button').attr('onclick', `save_comment(${rank})`)
-
-                }
-            })
-        }
-
-        function save_comment(rank) {
+        function save_comment() {
+            let comment = '{{ comment }}'
+            console.log(comment)
             let name = $('#name').val()
-            let comment = $('#comment').val()
+            let reply = $('#reply').val()
+
+            console.log(`/reply/post/${reply}`)
             $.ajax({
                 type: 'POST',
-                url: `/reply?rank=${rank}`,
-                data: {name_give: name, comment_give: comment},
+                url: `/reply/post`,
+                data: {name_give: name, reply_give: reply, comment_give: comment},
                 success: function (response) {
                     alert(response['msg'])
                     window.location.reload()
@@ -124,45 +115,41 @@
             })
         }
 
-        function show_comment(rank) {
-            const orderValue = props;
+        function show_comment_info(){
+
+            console.log(comment)
+            $.ajax({
+                type: 'POST',
+                url: `/reply/show`,
+                data: {comment_give: comment},
+                success: function (response) {
+                }
+            })
+        }
+
+        function show_comment() {
             $('#comment-list').empty()
             $.ajax({
                 type: "GET",
-                url: `/reply?rank=${rank}`,
+                url: `/reply/show?comment_give=${comment}`,
                 data: {},
                 success: function (response) {
-                    let rows = response['reply']
+                    let rows = response['replys']
                     for (let i = 0; i < rows.length; i++) {
-                        let num = rows[i]['num']
                         let name = rows[i]['name']
-                        let comment = rows[i]['comment']
-                        if (rank === num) {
-                            let temp_html = `<div class="card-body">
-                                                <blockquote class="blockquote mb-0">
-                                                    <p>${comment}</p>
-                                                    <footer class="blockquote-footer">${name}</footer>
-                                                </blockquote>
-                                            </div>`
+                        let reply = rows[i]['reply']
+                        let temp_html = `<div class="card-body">
+                                            <blockquote class="blockquote mb-0">
+                                                <p>${reply}</p>
+                                                <footer class="blockquote-footer">${name}</footer>
+                                            </blockquote>
+                                        </div>`
 
-                            $('#comment-list').append(temp_html)
-                        } else if (orderValue === 'desc') {
-                            for (let i = rows.length - 1; i > 0; i--) {
-                                let name = rows[i]['name']
-                                let comment = rows[i]['comment']
-                                let num = rows[i]['num']
-                                temp_html = `<div class="card-body">
-                                                <blockquote class="blockquote mb-0">
-                                                    <p>${comment}</p>
-                                                    <footer class="blockquote-footer">${name}</footer>
-                                                </blockquote>
-                                            </div>`
-                                $('#comment-list').append(temp_html)
-                            }
-                        }
-
+                        $('#comment-list').append(temp_html)
                     }
+
                 }
+
             });
         }
 
@@ -198,43 +185,44 @@
             const value = props;
             show_comment(props);
         }
-    </script>
-</head>
-<body>
-<div class="nav-bar">
-    <div class="nav-wrap">
-        <h2><a href="/">MUSINSA</a></h2>
-        <div class="weather">
-            <div class="CurrIcon"></div>
-            <div class="CurrTemp"></div>
+
+        </script>
+    </head>
+    <body>
+        <div class="nav-bar">
+            <div class="nav-wrap">
+                <h2><a href="/">MUSINSA</a></h2>
+                <div class="weather">
+                    <div class="CurrIcon"></div>
+                    <div class="CurrTemp"></div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="mypost">
-    <div class="form-floating mb-4">
-        <img src="" alt="">
-    </div>
-    <!--    <div class="input-group mb-3">-->
-    <!--        <input type="text" class="form-control" id="title" placeholder="title" name="title" disabled>-->
-    <!--    </div>-->
-    <div class="form-floating mb-4">
-        <input type="text" class="form-control" id="name" placeholder="name">
-        <label for="floatingInput">이름</label>
-    </div>
-    <div class="form-floating">
-<textarea class="form-control" placeholder="Leave a comment here" id="comment"
+        <div class="mypost">
+            <div class="form-floating mb-4">
+                <img src="" alt="">
+            </div>
+            <!--    <div class="input-group mb-3">-->
+            <!--        <input type="text" class="form-control" id="title" placeholder="title" name="title" disabled>-->
+            <!--    </div>-->
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control" id="name" placeholder="name">
+                <label for="floatingInput">이름</label>
+            </div>
+            <div class="form-floating">
+                <textarea class="form-control" placeholder="Leave a comment here" id="reply"
           style="height: 100px"></textarea>
-        <label for="floatingTextarea2">후기</label>
-    </div>
-    <button onclick="save_comment()" type="button" class="btn btn-dark" id="post-button">후기 남기기</button>
-</div>
-<div class="mycards" id="comment-list">
-    <div>
-        <select onchange="recnetly(this.value)">
-            <option value="asc">최신순▽</option>
-            <option value="desc">최신순△</option>
-        </select>
-    </div>
-</div>
-</body>
+                <label for="floatingTextarea2">후기</label>
+            </div>
+            <button onclick="save_comment()" type="button" class="btn btn-dark">후기 남기기</button>
+        </div>
+        <div class="mycards" id="comment-list">
+            <div>
+                <select onchange="recnetly(this.value)">
+                    <option value="asc">최신순▽</option>
+                    <option value="desc">최신순△</option>
+                </select>
+            </div>
+        </div>
+    </body>
 </html>
