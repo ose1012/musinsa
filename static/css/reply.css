@@ -82,3 +82,10 @@ h2 {
     justify-content: center;
     margin-top: 25px;
 }
+
+.btn2 {
+    float: right;
+    text-decoration: none;
+    border: none;
+    background-color: white;
+}

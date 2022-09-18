@@ -77,6 +77,7 @@ def reply(comment):
     return render_template("reply.html", comment=comment)
 
 
+
 @app.route('/reply/post', methods=["POST"])
 def reply_post():
     name_receive = request.form['name_give']
@@ -101,6 +102,20 @@ def show_comment():
     comment_list = list(db.reply.find({'comment': comment_receive}, {'_id': False}))
     print(comment_list)
     return jsonify({'replys': comment_list})
+
+
+# @app.route('/reply/update', methods=['POST'])
+# def update_comment():
+#     comment_receive = request.form.get('comment_give')
+#     db.reply.update_one({'comment': comment_receive})
+#     return jsonify({'msg': '수정 완료'})
+
+
+@app.route('/reply/delete', methods=['POST'])
+def delete_comment():
+    comment_receive = request.form.get('comment_give')
+    db.reply.delete_one({'comment': comment_receive})
+    return jsonify({'msg': '삭제 완료'})
 
 
 @app.route("/musinsa/done", methods=["POST"])
