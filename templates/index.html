@@ -1,65 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Noto+Sans+KR&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css"/>
-    <script type=text/javascript src="{{ url_for('static', filename='js/javascript.js') }}"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/jquery.mb.YTPlayer/3.3.1/css/jquery.mb.YTPlayer.min.css">
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mb.YTPlayer/3.3.1/jquery.mb.YTPlayer.min.js"></script>
-    <title>무신사 실시간 랭킹</title>
-    <script src="https://kit.fontawesome.com/fa9d346fc7.js" crossorigin="anonymous"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/musinsa.png') }}">
+    <meta charset="UTF-8">
+    <script>
+        jQuery(function () {
+            jQuery('#background').YTPlayer();
+        });
+    </script>
+    <title>무신사</title>
 </head>
-<div class="nav-bar">
-    <div class="nav-wrap">
-        <h2><a href="/">MUSINSA</a></h2>
-        <div class="weather">
-            <div class="CurrIcon"></div>
-            <div class="CurrTemp"></div>
+<body>
+<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="nav-bar">
+            <div class="nav-wrap">
+                <h2><a href="/">MUSINSA</a></h2>
+                <div class="weather">
+                    <div class="CurrIcon"></div>
+                    <div class="CurrTemp"></div>
+                </div>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <main role="main" class="inner cover">
+        <h1 class="cover-heading">무신사 실시간 랭킹</h1>
+        <p class="lead">무신사 랭킹은 상품 매출, 판매 수량, 상품 조회 수, 작성 후기 수를 반영한 공식에 의해 선정됩니다.
+            <br>무신사 스토어는 광고 목적으로 랭킹을 절대 임의 조작하지 않으므로 믿고 구매하셔도 됩니다.</p>
+        <p class="lead">
+            <a href="/home" class="btn btn-lg btn-secondary">Learn more</a>
+        </p>
+    </main>
+
+    <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a
+                    href="https://twitter.com/mdo">@mdo</a>.</p>
+        </div>
+    </footer>
 </div>
-<div class="mypost">
-    <table class="table">
-        <tbody id="cards-box">
-        <tr>
-            <th scope="row">1</th>
-            <td><img src="https://image.msscdn.net/images/goods_img/20220822/2731272/2731272_2_125.jpg" alt=""></td>
-            <td>스컬프터</td>
-            <td>Acid Cargo Jogger Pants Vintage Green</td>
-            <td onclick="event.cancelBubble=true" class="mybox" id="bucket-list">
-                <button onclick="like(${rank})"><span class="like"><i class="fa-regular fa-star"></i></span>
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<div id="background" class="player" data-property="{
+      videoURL:'https://www.youtube.com/watch?v=_u-JFPxBS2M',
+      mute: true,
+      showControls: false,
+      useOnMobile: true,
+      quality: 'highres',
+      containment: 'body',
+      loop: true,
+      autoPlay: true,
+      stopMovieOnBlur: false,
+      startAt: 0,
+      opacity: 1
+    }">
 </div>
-<!--<div id="background" class="player" data-property="{-->
-<!--      videoURL:'https://www.youtube.com/watch?v=_u-JFPxBS2M',-->
-<!--      mute: true,-->
-<!--      showControls: false,-->
-<!--      useOnMobile: true,-->
-<!--      quality: 'highres',-->
-<!--      containment: 'body',-->
-<!--      loop: true,-->
-<!--      autoPlay: true,-->
-<!--      stopMovieOnBlur: false,-->
-<!--      startAt: 0,-->
-<!--      opacity: 1-->
-<!--    }">-->
-<!--</div>-->
 </body>
 </html>

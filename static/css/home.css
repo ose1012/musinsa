@@ -1,0 +1,161 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    color: white;
+}
+
+.nav-bar {
+    background-color: black;
+    width: 100%;
+}
+
+.nav-bar > h2 {
+    color: white;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: black;
+    color: white;
+}
+
+img {
+    cursor: pointer;
+}
+
+h2 {
+    margin-top: 5px;
+}
+
+h4 {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.fa {
+    background-color: transparent;
+    border: 0;
+    color: gold;
+}
+
+
+.nav-wrap {
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+.mycards {
+    margin: 20px auto 0px auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.mypost {
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
+
+.weather {
+    color: white;
+    margin-top: 10px;
+}
+
+.CurrIcon, .CurrTemp {
+    display: inline-block;
+    font-size: 1.375rem;
+    text-align: center;
+}
+
+.CurrIcon {
+    margin-right: 2px;
+}
+
+.City {
+    font-size: 0.938rem;
+    text-align: center;
+}
+
+.like {
+    font-size: 20px;
+}
+
+.btn-1 {
+    width: 65px;
+    height: 40px;
+    border: none;
+    color: black;
+    border-radius: 4px;
+    transition: ease-out 0.3s;
+    font-size: 15px;
+    outline: none;
+    position: relative;
+    z-index: 1;
+    float: right;
+}
+
+.btn-1:hover {
+    cursor: pointer;
+    color: #fff;
+}
+
+.btn-1:before {
+    transition: 0.5s all ease;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    right: 50%;
+    bottom: 0;
+    opacity: 0;
+    content: "";
+    background-color: black;
+}
+
+.btn-1:hover:before {
+    transition: 0.5s all ease;
+    left: 0;
+    right: 0;
+    opacity: 1;
+    z-index: -1;
+}
+
+@media screen and (max-width: 767px) {
+
+    table td {
+        display: block;
+        text-align: left;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        float: right;
+        font-weight: bold;
+    }
+
+    .btn-1 {
+        width: 50px;
+        height: 30px;
+        margin-top: 14px;
+    }
+
+    table th {
+        border-style: none;
+    }
+
+    table td:nth-child(4) {
+        border-style: none;
+        float: right;
+    }
+
+}
+

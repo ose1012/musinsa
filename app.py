@@ -8,7 +8,8 @@ import certifi
 
 ca = certifi.where()
 
-client = MongoClient('mongodb+srv://test:sparta@cluster0.rfofzeu.mongodb.net/Cluster0?retryWrites=true&w=majority', tlsCAFile=ca)
+client = MongoClient('mongodb+srv://test:sparta@cluster0.rfofzeu.mongodb.net/Cluster0?retryWrites=true&w=majority',
+                     tlsCAFile=ca)
 db = client.dbsparta
 url = 'https://www.musinsa.com/ranking/best'
 
@@ -54,14 +55,19 @@ else:
 
 
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
+
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 
 @app.route("/musinsa", methods=["GET"])
 def musinsa_get():
     musinsa_list = list(db.musinsa.find({}, {'_id': False}))
-
+    print(musinsa_list)
     return jsonify({'musinsas': musinsa_list})
 
 
@@ -88,14 +94,11 @@ def reply_post():
     return jsonify({'msg': '후기 작성 완료!'})
 
 
-@app.route("/reply/show", methods=["POST","GET"])
+@app.route("/reply/show", methods=["POST", "GET"])
 def show_comment():
-    # rank = int(request.args["rank"])
-    # title = request.form['title']
-    # comment_list = list(db.reply.find({'rank': rank}, {'_id': False}))
     comment_receive = request.args.get('comment_give')
     print(comment_receive)
-    comment_list = list(db.reply.find({'comment':comment_receive}, {'_id': False}))
+    comment_list = list(db.reply.find({'comment': comment_receive}, {'_id': False}))
     print(comment_list)
     return jsonify({'replys': comment_list})
 

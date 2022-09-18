@@ -1,7 +1,7 @@
 // window.open('https://youtu.be/_u-JFPxBS2M', '40조', 'width = 500, height = 500, top = 100, left = 200, location = no');
-jQuery( function() {
-        jQuery( '#background' ).YTPlayer();
-      } );
+jQuery(function () {
+    jQuery('#background').YTPlayer();
+});
 $(document).ready(function () {
     listing();
 });
@@ -28,7 +28,7 @@ function listing() {
                 if (dune === 0) {
                     temp_html = `<tr>
                                         <th scope="row">${rank}위</th>
-                                        <td><img src="${image}" onclick="location.href='/comment?rank=${rank}'" alt=""></td>
+                                        <td><img src="${image}" onclick="location.href='${url}'" alt=""></td>
                                         <td><h4 onclick="location.href='${url}'">${title}</h4><p>${comment}</p><p>${price}</p>
                                         <button onclick="location.href='/reply/${comment}'" type="button" class="btn-1">후기</button>
                                         </td>

@@ -1,100 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-              crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-                crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-
-        <title>무신사 실시간 랭킹</title>
-        <script src="https://kit.fontawesome.com/fa9d346fc7.js" crossorigin="anonymous"></script>
-        <style>
-        * {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        a {
-            text-decoration: none;
-            color: white;
-        }
-
-        a:hover {
-            color: white;
-        }
-
-        h2 {
-            margin-top: 5px;
-        }
-
-        .nav-bar {
-            background-color: black;
-            width: 100%;
-        }
-
-        .nav-bar > h2 {
-            color: white;
-            font-weight: bold;
-        }
-
-        .nav-wrap {
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            margin: 0 auto;
-        }
-
-        .weather {
-            color: white;
-            margin-top: 5px;
-        }
-
-        .CurrIcon, .CurrTemp {
-            display: inline-block;
-            font-size: 1.375rem;
-            text-align: center;
-        }
-
-        .CurrIcon {
-            margin-right: 2px;
-        }
-
-        .mypost {
-            width: 95%;
-            max-width: 500px;
-            margin: 20px auto 20px auto;
-
-            box-shadow: 0px 0px 3px 0px black;
-            padding: 20px;
-        }
-
-        .mypost > button {
-            margin-top: 15px;
-        }
-
-        .mycards {
-            width: 95%;
-            max-width: 500px;
-            margin: auto;
-        }
-
-        .mycards > .card {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        </style>
-        <script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/reply.css') }}" rel="stylesheet" type="text/css"/>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/musinsa.png') }}">
+    <title>무신사 실시간 랭킹</title>
+    <script src="https://kit.fontawesome.com/fa9d346fc7.js" crossorigin="anonymous"></script>
+    <script>
         let comment = '{{ comment }}'
+        let num = '{{ num }}'
+        let rank = '{{ rank }}'
         $(document).ready(function () {
             show_comment_info();
-            show_comment();
+            show_comment('asc');
+            show_image();
         });
 
         function save_comment() {
@@ -115,7 +44,7 @@
             })
         }
 
-        function show_comment_info(){
+        function show_comment_info() {
 
             console.log(comment)
             $.ajax({
@@ -127,7 +56,30 @@
             })
         }
 
-        function show_comment() {
+
+        function show_image() {
+            $.ajax({
+                type: "GET",
+                url: `/musinsa`,
+                data: {},
+                success: function (response) {
+                    let rows = response['musinsas']
+                    for (let i = 0; i < rows.length; i++) {
+                        let comments = rows[i]['comment']
+                        let image = rows[i]['image']
+                        let temp_html = `<div class="form-floating mb-4">
+                                            <img src="${image}" alt="">
+                                        </div>`
+                        if(comment === comments){
+                            $('.mb-4:nth-child(1)').append(temp_html)
+                        }
+                    }
+                }
+            });
+        }
+
+        function show_comment(props) {
+            const orderValue = props; // 정렬기준
             $('#comment-list').empty()
             $.ajax({
                 type: "GET",
@@ -135,24 +87,41 @@
                 data: {},
                 success: function (response) {
                     let rows = response['replys']
-                    for (let i = 0; i < rows.length; i++) {
-                        let name = rows[i]['name']
-                        let reply = rows[i]['reply']
-                        let temp_html = `<div class="card-body">
-                                            <blockquote class="blockquote mb-0">
-                                                <p>${reply}</p>
-                                                <footer class="blockquote-footer">${name}</footer>
-                                            </blockquote>
-                                        </div>`
+                    if (orderValue === 'asc') {
+                        for (let i = 0; i < rows.length; i++) {
+                            let name = rows[i]['name']
+                            let reply = rows[i]['reply']
+                            let temp_html = `<div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${reply}</p>
+                                                    <footer class="blockquote-footer">${name}</footer>
+                                                </blockquote>
+                                            </div>`
 
-                        $('#comment-list').append(temp_html)
+                            $('#comment-list').append(temp_html)
+                        }
+
+                    } else if (orderValue === 'desc') {
+                        for (let i = rows.length - 1; i > 0; i--) {
+                            let name = rows[i]['name']
+                            let reply = rows[i]['reply']
+                            let temp_html = `<div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${reply}</p>
+                                                    <footer class="blockquote-footer">${name}</footer>
+                                                </blockquote>
+                                            </div>`
+                            $('#comment-list').append(temp_html)
+                        }
                     }
-
                 }
-
             });
         }
 
+        const recnetly = (props) => {
+            const value = props;
+            show_comment(props);
+        }
         $(document).ready(function () {
             let weatherIcon = {
                 '01': 'fas fa-sun',
@@ -173,56 +142,48 @@
                 success: function (data) {
                     var $Icon = (data.weather[0].icon).substr(0, 2);
                     var $Temp = Math.floor(data.main.temp) + '°';
-                    var $City = data.name;
 
                     $('.CurrIcon').append('<i class="' + weatherIcon[$Icon] + '"></i>');
                     $('.CurrTemp').prepend($Temp);
-                    // $('.City').append($City);
                 }
             })
         });
-        const recnetly = (props) => {
-            const value = props;
-            show_comment(props);
-        }
 
-        </script>
-    </head>
-    <body>
-        <div class="nav-bar">
-            <div class="nav-wrap">
-                <h2><a href="/">MUSINSA</a></h2>
-                <div class="weather">
-                    <div class="CurrIcon"></div>
-                    <div class="CurrTemp"></div>
-                </div>
-            </div>
+    </script>
+</head>
+<body>
+<div class="nav-bar">
+    <div class="nav-wrap">
+        <h2><a href="/">MUSINSA</a></h2>
+        <div class="weather">
+            <div class="CurrIcon"></div>
+            <div class="CurrTemp"></div>
         </div>
-        <div class="mypost">
-            <div class="form-floating mb-4">
-                <img src="" alt="">
-            </div>
-            <!--    <div class="input-group mb-3">-->
-            <!--        <input type="text" class="form-control" id="title" placeholder="title" name="title" disabled>-->
-            <!--    </div>-->
-            <div class="form-floating mb-4">
-                <input type="text" class="form-control" id="name" placeholder="name">
-                <label for="floatingInput">이름</label>
-            </div>
-            <div class="form-floating">
+    </div>
+</div>
+<div class="mypost">
+    <div class="form-floating mb-4">
+        <img src="" alt="">
+    </div>
+    <div class="form-floating mb-4">
+        <input type="text" class="form-control" id="name" placeholder="name">
+        <label for="floatingInput">이름</label>
+    </div>
+    <div class="form-floating">
                 <textarea class="form-control" placeholder="Leave a comment here" id="reply"
-          style="height: 100px"></textarea>
-                <label for="floatingTextarea2">후기</label>
-            </div>
-            <button onclick="save_comment()" type="button" class="btn btn-dark">후기 남기기</button>
-        </div>
-        <div class="mycards" id="comment-list">
-            <div>
-                <select onchange="recnetly(this.value)">
-                    <option value="asc">최신순▽</option>
-                    <option value="desc">최신순△</option>
-                </select>
-            </div>
-        </div>
-    </body>
+                          style="height: 100px"></textarea>
+        <label for="floatingTextarea2">후기</label>
+    </div>
+    <button onclick="save_comment()" type="button" class="btn btn-dark">후기 남기기</button>
+</div>
+<div class="mycards">
+    <div>
+        <select onchange="recnetly(this.value)">
+            <option value="asc">최신순▽</option>
+            <option value="desc">최신순△</option>
+        </select>
+    </div>
+    <div id="comment-list"></div>
+</div>
+</body>
 </html>
